@@ -1,19 +1,19 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import type { ComponentProps } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import type { ComponentProps } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { colors, spacing } from "@/theme";
+import { colors, iconSizes, radii, sizes, spacing } from '@/theme';
 
-import { AppText } from "./AppText";
-import { Button } from "./Button";
+import { AppText } from './AppText';
+import { Button } from './Button';
 
-type IconName = ComponentProps<typeof Ionicons>["name"];
+type IconName = ComponentProps<typeof Ionicons>['name'];
 
 export type LoadingStateProps = {
   message?: string;
 };
 
-export function LoadingState({ message = "Loading…" }: LoadingStateProps) {
+export function LoadingState({ message = 'Loading…' }: LoadingStateProps) {
   return (
     <View style={styles.container} accessibilityRole="progressbar" accessibilityLabel={message}>
       <ActivityIndicator size="large" color={colors.primary} />
@@ -31,11 +31,16 @@ export type EmptyStateProps = {
   action?: { label: string; onPress: () => void };
 };
 
-export function EmptyState({ icon = "file-tray-outline", title, message, action }: EmptyStateProps) {
+export function EmptyState({
+  icon = 'file-tray-outline',
+  title,
+  message,
+  action,
+}: EmptyStateProps) {
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
-        <Ionicons name={icon} size={36} color={colors.primary} />
+        <Ionicons name={icon} size={iconSizes.lg} color={colors.primary} />
       </View>
       <AppText variant="subheading" align="center">
         {title}
@@ -67,13 +72,13 @@ export type ErrorStateProps = {
 
 export function ErrorState({
   message,
-  title = "Something went wrong",
+  title = 'Something went wrong',
   onRetry,
   retrying = false,
 }: ErrorStateProps) {
   return (
     <View style={styles.container} accessibilityRole="alert">
-      <Ionicons name="alert-circle-outline" size={48} color={colors.danger} />
+      <Ionicons name="alert-circle-outline" size={iconSizes.xl} color={colors.danger} />
       <AppText variant="subheading" align="center">
         {title}
       </AppText>
@@ -95,18 +100,18 @@ export function ErrorState({
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.md,
     padding: spacing.xl,
   },
   iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: sizes.iconBadge,
+    height: sizes.iconBadge,
+    borderRadius: radii.pill,
     backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   action: {
     marginTop: spacing.sm,

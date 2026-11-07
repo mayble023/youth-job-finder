@@ -1,5 +1,5 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import type { ComponentProps } from "react";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import type { ComponentProps } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -7,13 +7,13 @@ import {
   View,
   type StyleProp,
   type ViewStyle,
-} from "react-native";
+} from 'react-native';
 
-import { colors, radii, spacing, type ColorToken } from "@/theme";
+import { colors, iconSizes, opacity, radii, sizes, spacing, type ColorToken } from '@/theme';
 
-import { AppText } from "./AppText";
+import { AppText } from './AppText';
 
-export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
 export type ButtonProps = {
   title: string;
@@ -22,7 +22,7 @@ export type ButtonProps = {
   /** Shows a spinner and blocks presses. */
   loading?: boolean;
   disabled?: boolean;
-  icon?: ComponentProps<typeof Ionicons>["name"];
+  icon?: ComponentProps<typeof Ionicons>['name'];
   /** Stretch to the width of the parent. Defaults to true. */
   fullWidth?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -38,16 +38,16 @@ type VariantStyle = {
 };
 
 const variantStyles: Record<ButtonVariant, VariantStyle> = {
-  primary: { background: "primary", pressedBackground: "primaryDark", text: "onPrimary" },
-  secondary: { background: "secondary", text: "onSecondary" },
-  danger: { background: "danger", text: "onDanger" },
-  ghost: { pressedBackground: "primaryLight", text: "primary" },
+  primary: { background: 'primary', pressedBackground: 'primaryDark', text: 'onPrimary' },
+  secondary: { background: 'secondary', text: 'onSecondary' },
+  danger: { background: 'danger', text: 'onDanger' },
+  ghost: { pressedBackground: 'primaryLight', text: 'primary' },
 };
 
 export function Button({
   title,
   onPress,
-  variant = "primary",
+  variant = 'primary',
   loading = false,
   disabled = false,
   icon,
@@ -55,9 +55,9 @@ export function Button({
   style,
   accessibilityHint,
 }: ButtonProps) {
-  const v = variantStyles[variant];
+  const variantStyle = variantStyles[variant];
   const isDisabled = disabled || loading;
-  const textColor = colors[v.text];
+  const textColor = colors[variantStyle.text];
 
   return (
     <Pressable
@@ -68,12 +68,15 @@ export function Button({
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       style={({ pressed }) => {
-        const fill = pressed && v.pressedBackground ? v.pressedBackground : v.background;
+        const fill =
+          pressed && variantStyle.pressedBackground
+            ? variantStyle.pressedBackground
+            : variantStyle.background;
         return [
           styles.base,
           fullWidth && styles.fullWidth,
-          { backgroundColor: fill ? colors[fill] : "transparent" },
-          pressed && !v.pressedBackground && styles.pressedDim,
+          { backgroundColor: fill ? colors[fill] : 'transparent' },
+          pressed && !variantStyle.pressedBackground && styles.pressedDim,
           isDisabled && styles.disabled,
           style,
         ];
@@ -83,7 +86,7 @@ export function Button({
         <ActivityIndicator color={textColor} />
       ) : (
         <View style={styles.content}>
-          {icon ? <Ionicons name={icon} size={18} color={textColor} /> : null}
+          {icon ? <Ionicons name={icon} size={iconSizes.md} color={textColor} /> : null}
           <AppText variant="button" style={{ color: textColor }}>
             {title}
           </AppText>
@@ -95,25 +98,25 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 48, // comfortable touch target
+    minHeight: sizes.touchTarget,
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: radii.md,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fullWidth: {
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
   },
   content: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: spacing.sm,
   },
   pressedDim: {
-    opacity: 0.85,
+    opacity: opacity.pressedSubtle,
   },
   disabled: {
-    opacity: 0.5,
+    opacity: opacity.disabled,
   },
 });

@@ -1,9 +1,9 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, View } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { StyleSheet, View } from 'react-native';
 
-import { colors, spacing } from "@/theme";
+import { colors, iconSizes, spacing } from '@/theme';
 
-import { AppText } from "./AppText";
+import { AppText } from './AppText';
 
 export type OfflineBannerProps = {
   /** Controlled by network status later; renders nothing when false. */
@@ -19,7 +19,7 @@ export function OfflineBanner({
 
   return (
     <View style={styles.banner} accessibilityRole="alert" accessibilityLiveRegion="polite">
-      <Ionicons name="cloud-offline-outline" size={18} color={colors.onPrimary} />
+      <Ionicons name="cloud-offline-outline" size={iconSizes.md} color={colors.onPrimary} />
       <AppText variant="caption" style={styles.text}>
         {message}
       </AppText>
@@ -29,8 +29,8 @@ export function OfflineBanner({
 
 const styles = StyleSheet.create({
   banner: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: spacing.sm,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     color: colors.onPrimary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });

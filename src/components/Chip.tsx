@@ -1,28 +1,28 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import type { ComponentProps } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import type { ComponentProps } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
-import { colors, radii, spacing } from "@/theme";
+import { colors, iconSizes, opacity, radii, sizes, spacing } from '@/theme';
 
-import { AppText } from "./AppText";
+import { AppText } from './AppText';
 
 export type ChipProps = {
   label: string;
   selected?: boolean;
   /** Omit to render a static (non-pressable) chip, e.g. a skill tag. */
   onPress?: () => void;
-  icon?: ComponentProps<typeof Ionicons>["name"];
+  icon?: ComponentProps<typeof Ionicons>['name'];
   disabled?: boolean;
 };
 
 export function Chip({ label, selected = false, onPress, icon, disabled = false }: ChipProps) {
-  const fg = selected ? colors.primary : colors.textMuted;
+  const foregroundColor = selected ? colors.primary : colors.textMuted;
 
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled || !onPress}
-      accessibilityRole={onPress ? "togglebutton" : "text"}
+      accessibilityRole={onPress ? 'togglebutton' : 'text'}
       accessibilityState={{ selected, disabled }}
       accessibilityLabel={label}
       hitSlop={spacing.xs}
@@ -34,11 +34,11 @@ export function Chip({ label, selected = false, onPress, icon, disabled = false 
       ]}
     >
       {selected ? (
-        <Ionicons name="checkmark" size={16} color={fg} />
+        <Ionicons name="checkmark" size={iconSizes.sm} color={foregroundColor} />
       ) : icon ? (
-        <Ionicons name={icon} size={16} color={fg} />
+        <Ionicons name={icon} size={iconSizes.sm} color={foregroundColor} />
       ) : null}
-      <AppText variant="caption" style={[styles.label, { color: fg }]}>
+      <AppText variant="caption" style={[styles.label, { color: foregroundColor }]}>
         {label}
       </AppText>
     </Pressable>
@@ -47,11 +47,11 @@ export function Chip({ label, selected = false, onPress, icon, disabled = false 
 
 const styles = StyleSheet.create({
   chip: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
     gap: spacing.xs,
-    minHeight: 36,
+    minHeight: sizes.chipHeight,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: radii.pill,
@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
   },
   pressed: {
-    opacity: 0.7,
+    opacity: opacity.pressed,
   },
   disabled: {
-    opacity: 0.5,
+    opacity: opacity.disabled,
   },
   label: {
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });

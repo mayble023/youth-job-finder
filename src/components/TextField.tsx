@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { StyleSheet, TextInput, View, type TextInputProps } from "react-native";
+import { useState } from 'react';
+import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 
-import { colors, radii, spacing, typography } from "@/theme";
+import { colors, radii, sizes, spacing, typography } from '@/theme';
 
-import { AppText } from "./AppText";
+import { AppText } from './AppText';
 
-export type TextFieldProps = Omit<TextInputProps, "style" | "value" | "onChangeText"> & {
+export type TextFieldProps = Omit<TextInputProps, 'style' | 'value' | 'onChangeText'> & {
   label: string;
   value: string;
   onChangeText: (text: string) => void;
@@ -65,11 +65,11 @@ export function TextField({
         <View style={styles.footer}>
           <AppText
             variant="caption"
-            color={error ? "danger" : "textMuted"}
+            color={error ? 'danger' : 'textMuted'}
             style={styles.message}
-            accessibilityLiveRegion={error ? "polite" : undefined}
+            accessibilityLiveRegion={error ? 'polite' : undefined}
           >
-            {error ?? hint ?? ""}
+            {error ?? hint ?? ''}
           </AppText>
           {showCounter ? (
             <AppText variant="caption">
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   label: {
-    fontWeight: "600",
+    fontWeight: '600',
   },
   input: {
     ...typography.body,
@@ -96,15 +96,15 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    minHeight: 48,
+    minHeight: sizes.touchTarget,
   },
   multiline: {
-    minHeight: 112,
-    textAlignVertical: "top",
+    minHeight: sizes.multilineInputMinHeight,
+    textAlignVertical: 'top',
   },
   footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: spacing.sm,
   },
   message: {

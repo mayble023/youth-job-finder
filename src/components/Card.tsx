@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
-import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import type { ReactNode } from 'react';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors, radii, spacing } from "@/theme";
+import { colors, radii, shadows, spacing } from '@/theme';
 
 export type CardProps = {
   children: ReactNode;
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     padding: spacing.lg,
     gap: spacing.sm,
-    boxShadow: "0 1px 3px rgba(17, 24, 39, 0.08)",
+    boxShadow: shadows.card,
   },
   pressed: {
     backgroundColor: colors.primaryLight,
