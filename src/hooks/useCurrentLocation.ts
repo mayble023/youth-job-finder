@@ -8,7 +8,6 @@ import {
   openAppSettings,
   requestLocationPermission,
   type Coordinates,
-  type LocationPermission,
 } from '@/services/location';
 import { getErrorMessage } from '@/utils/errors';
 
@@ -17,77 +16,90 @@ export type LocationStatus = 'loading' | 'granted' | 'denied' | 'error';
 type LocationState = {
   status: LocationStatus;
   coordinates: Coordinates | null;
-  /** e.g. "Boroko"; null until found, or if it cannot be found. */
-  placeName: string | null;
   canAskAgain: boolean;
   errorMessage: string | null;
 };
 
-const INITIAL_STATE: LocationState = {
+const LOADING_STATE: LocationState = {
   status: 'loading',
   coordinates: null,
-  placeName: null,
   canAskAgain: true,
   errorMessage: null,
 };
 
-/** Asks for location permission once, then finds where the user is. */
+/** Asks for permission (prompting only if never answered) and then finds the phone. */
+async function findLocation(): Promise<LocationState> {
+  let permission;
+  try {
+    permission = await requestLocationPermission();
+  } catch {
+    return { ...LOADING_STATE, status: 'denied', canAskAgain: false };
+  }
+  if (!permission.granted) {
+    return { ...LOADING_STATE, status: 'denied', canAskAgain: permission.canAskAgain };
+  }
+
+  try {
+    const coordinates = await getCurrentCoordinates();
+    return { ...LOADING_STATE, status: 'granted', coordinates };
+  } catch (error) {
+    return { ...LOADING_STATE, status: 'error', errorMessage: getErrorMessage(error) };
+  }
+}
+
+/** The user's location, with the status a screen needs to explain what is happening. */
 export function useCurrentLocation() {
-  const [state, setState] = useState<LocationState>(INITIAL_STATE);
-  const isMounted = useRef(true);
+  const [state, setState] = useState<LocationState>(LOADING_STATE);
+  const [placeName, setPlaceName] = useState<string | null>(null);
+  // Bumped to start a new lookup (retry, or permission granted in Settings).
+  const [attempt, setAttempt] = useState(0);
   const statusRef = useRef<LocationStatus>('loading');
+
   useEffect(() => {
     statusRef.current = state.status;
   }, [state.status]);
 
-  const locate = useCallback(async () => {
-    setState((current) => ({ ...current, status: 'loading', errorMessage: null }));
+  useEffect(() => {
+    let isCurrent = true;
+    findLocation().then((next) => {
+      if (isCurrent) setState(next);
+    });
+    return () => {
+      isCurrent = false;
+    };
+  }, [attempt]);
 
-    let permission: LocationPermission;
-    try {
-      permission = await requestLocationPermission();
-    } catch {
-      permission = { granted: false, canAskAgain: false };
-    }
-    if (!isMounted.current) return;
-    if (!permission.granted) {
-      setState({ ...INITIAL_STATE, status: 'denied', canAskAgain: permission.canAskAgain });
-      return;
-    }
+  // Looked up after the map is shown, so a slow geocoder never delays the screen.
+  const { coordinates } = state;
+  useEffect(() => {
+    if (!coordinates) return;
+    let isCurrent = true;
+    getPlaceName(coordinates).then((name) => {
+      if (isCurrent) setPlaceName(name);
+    });
+    return () => {
+      isCurrent = false;
+    };
+  }, [coordinates]);
 
-    try {
-      const coordinates = await getCurrentCoordinates();
-      if (!isMounted.current) return;
-      setState({ ...INITIAL_STATE, status: 'granted', coordinates });
-      // Looked up after the map is shown, so a slow geocoder never delays the screen.
-      const placeName = await getPlaceName(coordinates);
-      if (isMounted.current) setState((current) => ({ ...current, placeName }));
-    } catch (error) {
-      if (!isMounted.current) return;
-      setState({ ...INITIAL_STATE, status: 'error', errorMessage: getErrorMessage(error) });
-    }
+  const retry = useCallback(() => {
+    setState(LOADING_STATE);
+    setAttempt((count) => count + 1);
   }, []);
 
+  // Users often allow location in Settings and come back. Check silently (no prompt), so
+  // closing the permission dialog itself can never trigger a second prompt.
   useEffect(() => {
-    isMounted.current = true;
-    void locate();
-
-    // Users often allow location in Settings and come back. Check silently (no prompt), so
-    // closing the permission dialog itself can never trigger a second prompt.
     const subscription = AppState.addEventListener('change', (appState) => {
       if (appState !== 'active' || statusRef.current !== 'denied') return;
       getLocationPermission()
         .then((permission) => {
-          if (permission.granted) void locate();
+          if (permission.granted) retry();
         })
         .catch(() => undefined);
     });
+    return () => subscription.remove();
+  }, [retry]);
 
-    return () => {
-      isMounted.current = false;
-      subscription.remove();
-    };
-  }, [locate]);
-
-  return { ...state, retry: locate, openSettings: openAppSettings };
+  return { ...state, placeName, retry, openSettings: openAppSettings };
 }
