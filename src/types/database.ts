@@ -75,9 +75,3 @@ export interface Application {
   created_at: string;
   updated_at: string;
 }
-
-export interface SavedJob {
-  user_id: string;
-  job_id: string;
-  created_at: string;
-}

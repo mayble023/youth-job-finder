@@ -87,18 +87,4 @@ export const shadows = {
 } as const;
 
 export type ColorToken = keyof typeof colors;
-export type SpacingToken = keyof typeof spacing;
-export type RadiusToken = keyof typeof radii;
 export type TypographyVariant = keyof typeof typography;
-
-export const theme = {
-  colors,
-  spacing,
-  radii,
-  typography,
-  sizes,
-  iconSizes,
-  opacity,
-  shadows,
-} as const;
-export type Theme = typeof theme;
