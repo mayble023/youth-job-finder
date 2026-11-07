@@ -1,0 +1,7 @@
+package-lock.json
+.expo/
+dist/
+CLAUDE.md
+AGENTS.md
+prompt.txt
+assets/expo.icon/

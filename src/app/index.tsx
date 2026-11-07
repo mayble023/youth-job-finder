@@ -1,7 +1,7 @@
 // TEMPORARY: component showcase for checking the design system in Expo Go.
 // Replace with the real home screen in Prompt 3.
-import { useState, type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { useState, type ReactNode } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import {
   AppText,
@@ -14,21 +14,29 @@ import {
   OfflineBanner,
   Screen,
   TextField,
-} from "@/components";
-import { colors, radii, spacing, typography, type ColorToken, type TypographyVariant } from "@/theme";
+} from '@/components';
+import {
+  colors,
+  radii,
+  spacing,
+  typography,
+  type ColorToken,
+  type TypographyVariant,
+} from '@/theme';
 
-const FILTERS = ["Full-time", "Part-time", "Internship", "Volunteer"];
-const SKILLS = ["Customer service", "Excel", "Driving licence", "Tok Pisin", "Carpentry"];
+const FILTERS = ['Full-time', 'Part-time', 'Internship', 'Volunteer'];
+const SKILLS = ['Customer service', 'Excel', 'Driving licence', 'Tok Pisin', 'Carpentry'];
 
 export default function DemoScreen() {
   const [offline, setOffline] = useState(true);
   const [loading, setLoading] = useState(false);
   const [retrying, setRetrying] = useState(false);
-  const [selected, setSelected] = useState<string[]>(["Full-time"]);
-  const [name, setName] = useState("");
-  const [about, setAbout] = useState("");
+  const [selected, setSelected] = useState<string[]>(['Full-time']);
+  const [name, setName] = useState('');
+  const [about, setAbout] = useState('');
 
-  const nameError = name.length > 0 && name.trim().length < 2 ? "Name must be at least 2 characters." : null;
+  const nameError =
+    name.length > 0 && name.trim().length < 2 ? 'Name must be at least 2 characters.' : null;
 
   const fakeRequest = (setBusy: (busy: boolean) => void) => {
     setBusy(true);
@@ -36,7 +44,9 @@ export default function DemoScreen() {
   };
 
   const toggle = (label: string) =>
-    setSelected((prev) => (prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]));
+    setSelected((prev) =>
+      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label],
+    );
 
   return (
     <Screen scroll header={<OfflineBanner visible={offline} />}>
@@ -44,7 +54,7 @@ export default function DemoScreen() {
         <Section title="Colours">
           <View style={styles.swatches}>
             {(Object.keys(colors) as ColorToken[])
-              .filter((key) => key !== "overlay")
+              .filter((key) => key !== 'overlay')
               .map((key) => (
                 <View key={key} style={styles.swatchItem}>
                   <View style={[styles.swatch, { backgroundColor: colors[key] }]} />
@@ -63,7 +73,12 @@ export default function DemoScreen() {
         </Section>
 
         <Section title="Button">
-          <Button title="Primary" icon="search" onPress={() => fakeRequest(setLoading)} loading={loading} />
+          <Button
+            title="Primary"
+            icon="search"
+            onPress={() => fakeRequest(setLoading)}
+            loading={loading}
+          />
           <Button title="Secondary" variant="secondary" />
           <Button title="Danger" variant="danger" icon="trash-outline" />
           <Button title="Ghost" variant="ghost" />
@@ -88,7 +103,12 @@ export default function DemoScreen() {
             multiline
             maxLength={200}
           />
-          <TextField label="Email" value="not-an-email" onChangeText={() => {}} error="Enter a valid email address." />
+          <TextField
+            label="Email"
+            value="not-an-email"
+            onChangeText={() => {}}
+            error="Enter a valid email address."
+          />
         </Section>
 
         <Section title="Chip">
@@ -121,7 +141,7 @@ export default function DemoScreen() {
 
         <Section title="OfflineBanner">
           <Button
-            title={offline ? "Hide offline banner" : "Show offline banner"}
+            title={offline ? 'Hide offline banner' : 'Show offline banner'}
             variant="ghost"
             icon="wifi"
             onPress={() => setOffline((v) => !v)}
@@ -140,7 +160,7 @@ export default function DemoScreen() {
               icon="briefcase-outline"
               title="No saved jobs yet"
               message="Tap the bookmark on a job to save it for later."
-              action={{ label: "Browse jobs", onPress: () => {} }}
+              action={{ label: 'Browse jobs', onPress: () => {} }}
             />
           </Frame>
         </Section>
@@ -181,13 +201,13 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   wrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.sm,
   },
   swatches: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.md,
   },
   swatchItem: {

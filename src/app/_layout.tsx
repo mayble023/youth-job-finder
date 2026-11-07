@@ -1,7 +1,7 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
-import { colors } from "@/theme";
+import { colors } from '@/theme';
 
 export default function RootLayout() {
   return (
@@ -15,7 +15,7 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.background },
         }}
       >
-        <Stack.Screen name="index" options={{ title: "Component Demo" }} />
+        <Stack.Screen name="index" options={{ title: 'Component Demo' }} />
       </Stack>
     </>
   );
