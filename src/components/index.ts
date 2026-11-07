@@ -13,6 +13,7 @@ export {
   type OptionPickerModalProps,
   type PickerOption,
 } from './OptionPickerModal';
+export { RecommendationCard, type RecommendationCardProps } from './RecommendationCard';
 export { Screen, type ScreenProps } from './Screen';
 export { SkillsInput, type SkillsInputProps } from './SkillsInput';
 export { StatusBadge } from './StatusBadge';
