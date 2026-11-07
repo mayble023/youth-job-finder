@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
 
 import { JobFiltersProvider } from '@/context/JobFiltersContext';
+import { useInterviewReminders } from '@/hooks/useReminders';
 import { colors } from '@/theme';
 import { headerOptions } from '@/theme/navigation';
 
@@ -23,6 +24,9 @@ function tabIcon(name: IconName, focusedName: IconName) {
 }
 
 export default function TabsLayout() {
+  // Mounted here because this layout only exists while the user is signed in.
+  useInterviewReminders();
+
   // Shared so the Map tab shows the same jobs as the filtered Jobs list.
   return (
     <JobFiltersProvider>

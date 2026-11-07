@@ -11,6 +11,7 @@ import {
 } from 'react';
 
 import * as authService from '@/services/auth';
+import { clearAllReminders } from '@/services/reminders';
 
 export type AuthContextValue = {
   session: Session | null;
@@ -44,8 +45,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = authService.onSessionChange((nextSession) => {
       latestSession.current = nextSession;
       if (!isResettingPassword.current) setSession(nextSession);
-      // Drop cached data from the previous account so the next user never sees it.
-      if (!nextSession) queryClient.clear();
+      // Drop cached data and reminders from the previous account so the next user on this
+      // phone never sees them.
+      if (!nextSession) {
+        queryClient.clear();
+        void clearAllReminders();
+      }
     });
 
     authService

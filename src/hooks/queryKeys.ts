@@ -16,4 +16,5 @@ export const queryKeys = {
   profileAndCv: ['me'] as const,
   profile: ['me', 'profile'] as const,
   cvInfo: (cvPath: string) => ['me', 'cv', cvPath] as const,
+  reminderSettings: ['reminderSettings'] as const,
 };
