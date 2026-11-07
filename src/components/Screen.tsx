@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
+import { HeaderHeightContext } from 'expo-router/react-navigation';
+import { useContext, type ReactNode } from 'react';
 import {
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   View,
@@ -35,6 +35,9 @@ export function Screen({
   style,
   contentContainerStyle,
 }: ScreenProps) {
+  // Expo apps are edge-to-edge on Android, so the window no longer resizes for the keyboard;
+  // padding on both platforms (offset by any header above us) keeps inputs visible.
+  const headerHeight = useContext(HeaderHeightContext) ?? 0;
   const padding = padded ? styles.padded : undefined;
 
   return (
@@ -42,7 +45,8 @@ export function Screen({
       {header}
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior="padding"
+        keyboardVerticalOffset={headerHeight}
       >
         {scroll ? (
           <ScrollView
