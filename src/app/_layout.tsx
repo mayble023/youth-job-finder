@@ -1,17 +1,14 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
 
 import { LoadingState, Screen } from '@/components';
 import { AuthProvider } from '@/context/AuthContext';
 import { useAuth } from '@/hooks/useAuth';
+import { queryClient } from '@/services/queryClient';
 import { stackScreenOptions } from '@/theme/navigation';
 
 export default function RootLayout() {
-  // Created once per app launch; useState keeps the same client across re-renders.
-  const [queryClient] = useState(() => new QueryClient());
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

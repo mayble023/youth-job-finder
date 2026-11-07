@@ -1,5 +1,16 @@
 # Youth Job Finder — Build Plan
 
+WORKFLOW FOR EVERY PHASE (follow exactly)
+
+1. git checkout main, git pull, then create the phase's branch.
+2. Build ONLY that phase. Commit in small working steps with conventional messages.
+3. Run npm run typecheck and npm run lint and fix everything.
+4. git push -u origin <branch>, then gh pr create --base main --fill.
+5. STOP and tell me: what you built, the files changed, and a short numbered list of what to test on my Android phone in Expo Go (I run npx expo start myself in another window). Explain anything I will need to defend in a lab.
+6. Wait. When I reply "next": gh pr merge --merge --delete-branch, git checkout main, git pull, then start the next phase. If I report a problem instead, fix it on the same branch first.
+
+Never skip ahead. Never upgrade Expo. Never use a service_role key. Never commit .env. If a phase needs me to do something outside the code (Supabase dashboard, API keys), STOP and give me exact click-by-click steps first.
+
 PHASES
 
 PHASE 0 — Finish the merge (branch: feat/ui-foundation)
