@@ -15,8 +15,8 @@ export default function MapScreen() {
           jobId ? `The map will focus on job ${jobId}.` : 'Jobs near you will appear on a map here.'
         }
         action={{
-          label: 'Open a sample job',
-          onPress: () => router.push({ pathname: '/jobs/[id]', params: { id: 'sample-1' } }),
+          label: 'Browse jobs',
+          onPress: () => router.navigate('/'),
         }}
       />
     </Screen>
