@@ -4,8 +4,8 @@ A mobile app that helps young job seekers in Papua New Guinea find entry-level w
 
 Built with React Native and Expo (managed workflow, Expo Router, TypeScript) on Supabase, for IS325 Mobile Applications Development.
 
-- **Student:** `<YOUR FULL NAME>`
-- **Student number:** `<YOUR STUDENT NUMBER>`
+- **Student:** `<Mayble WILLIE>`
+- **Student number:** `<23201167>`
 - **Repository:** https://github.com/mayble023/youth-job-finder
 
 ## Screenshots
