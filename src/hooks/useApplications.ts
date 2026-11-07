@@ -76,8 +76,9 @@ export function useDeleteApplication() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id }: { id: string; jobId: string }) => deleteApplication(id),
-    onSuccess: (_result, { id, jobId }) => {
-      queryClient.removeQueries({ queryKey: queryKeys.application(id) });
+    // The detail entry is left to expire on its own: removing it now would make the open
+    // screen refetch and flash "not found" before it closes.
+    onSuccess: (_result, { jobId }) => {
       return Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.applicationList() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.applicationForJob(jobId) }),
