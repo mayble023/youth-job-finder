@@ -10,7 +10,10 @@ import {
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { colors, spacing } from '@/theme';
+
+import { OfflineBanner } from './OfflineBanner';
 
 export type ScreenProps = {
   children: ReactNode;
@@ -20,7 +23,7 @@ export type ScreenProps = {
   padded?: boolean;
   /** Safe-area edges to inset. Defaults to all edges except top (the Stack header handles it). */
   edges?: Edge[];
-  /** Rendered above the content, outside the padding (e.g. OfflineBanner). */
+  /** Rendered above the content, outside the padding (e.g. a filter bar). */
   header?: ReactNode;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
@@ -39,9 +42,12 @@ export function Screen({
   // padding on both platforms (offset by any header above us) keeps inputs visible.
   const headerHeight = useContext(HeaderHeightContext) ?? 0;
   const padding = padded ? styles.padded : undefined;
+  // Every screen shows the banner, so the user always knows why data may be stale.
+  const { isOnline } = useNetworkStatus();
 
   return (
     <SafeAreaView edges={edges} style={[styles.root, style]}>
+      <OfflineBanner visible={!isOnline} />
       {header}
       <KeyboardAvoidingView
         style={styles.flex}

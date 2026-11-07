@@ -6,14 +6,14 @@ import { colors, iconSizes, spacing } from '@/theme';
 import { AppText } from './AppText';
 
 export type OfflineBannerProps = {
-  /** Controlled by network status later; renders nothing when false. */
+  /** Renders nothing when false. */
   visible: boolean;
   message?: string;
 };
 
 export function OfflineBanner({
   visible,
-  message = "You're offline. Showing saved jobs.",
+  message = "You're offline. Some information may be out of date.",
 }: OfflineBannerProps) {
   if (!visible) return null;
 
