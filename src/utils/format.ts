@@ -37,3 +37,15 @@ export function formatClosingDate(closingDate: string | null, now = new Date()):
 export function formatTimeAgo(isoTimestamp: string): string {
   return formatDistanceToNow(parseISO(isoTimestamp), { addSuffix: true });
 }
+
+/** "Mon 10 Nov 2026, 2:30 PM" — used for interview times. */
+export function formatDateTime(value: Date | string): string {
+  const date = typeof value === 'string' ? parseISO(value) : value;
+  return format(date, 'EEE d MMM yyyy, h:mm a');
+}
+
+/** "10 Nov 2026" */
+export function formatDate(value: Date | string): string {
+  const date = typeof value === 'string' ? parseISO(value) : value;
+  return format(date, 'd MMM yyyy');
+}
