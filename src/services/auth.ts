@@ -1,5 +1,7 @@
 import { isAuthError, isAuthRetryableFetchError, type Session } from '@supabase/supabase-js';
 
+import { AppError } from '@/utils/errors';
+
 import { supabase } from './supabase';
 
 export type AuthErrorKind =
@@ -13,16 +15,7 @@ export type AuthErrorKind =
   | 'network'
   | 'unknown';
 
-/** An auth failure with a message that is safe to show to the user. */
-export class AuthServiceError extends Error {
-  readonly kind: AuthErrorKind;
-
-  constructor(kind: AuthErrorKind, message: string) {
-    super(message);
-    this.name = 'AuthServiceError';
-    this.kind = kind;
-  }
-}
+type AuthAppError = AppError<AuthErrorKind>;
 
 const FRIENDLY_MESSAGES: Record<AuthErrorKind, string> = {
   invalid_credentials: 'Incorrect email or password.',
@@ -63,12 +56,12 @@ function classify(error: unknown): AuthErrorKind {
   }
 }
 
-function toAuthServiceError(error: unknown): AuthServiceError {
+function toAppError(error: unknown): AuthAppError {
   const kind = classify(error);
-  return new AuthServiceError(kind, FRIENDLY_MESSAGES[kind]);
+  return new AppError<AuthErrorKind>(kind, FRIENDLY_MESSAGES[kind]);
 }
 
-/** Runs a Supabase auth call and turns any failure into an AuthServiceError. */
+/** Runs a Supabase auth call and turns any failure into an AppError. */
 async function run<R extends { data: unknown; error: unknown }>(
   call: () => Promise<R>,
 ): Promise<R['data']> {
@@ -76,9 +69,9 @@ async function run<R extends { data: unknown; error: unknown }>(
   try {
     result = await call();
   } catch (thrown) {
-    throw toAuthServiceError(thrown);
+    throw toAppError(thrown);
   }
-  if (result.error) throw toAuthServiceError(result.error);
+  if (result.error) throw toAppError(result.error);
   return result.data;
 }
 
@@ -105,7 +98,7 @@ export async function signUp(params: { email: string; password: string; fullName
   // With email confirmation on, Supabase hides whether an email is taken by returning a
   // user with no identities instead of an error.
   if (data.user && data.user.identities?.length === 0) {
-    throw new AuthServiceError('user_exists', FRIENDLY_MESSAGES.user_exists);
+    throw new AppError<AuthErrorKind>('user_exists', FRIENDLY_MESSAGES.user_exists);
   }
 }
 
