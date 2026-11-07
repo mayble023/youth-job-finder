@@ -20,8 +20,11 @@ export const colors = {
   textMuted: '#4B5563', // 7.6:1 on white, 7.0:1 on background
   border: '#D0D5DD',
   success: '#1E7B34', // 5.3:1 on white
+  successLight: '#E7F5EC',
   warning: '#B54708', // 5.4:1 on white
+  warningLight: '#FEF0E6',
   danger: '#B42318', // 6.5:1 on white
+  dangerLight: '#FDECEA',
   onPrimary: '#FFFFFF',
   onSecondary: '#1F2937', // 7.3:1 on secondary
   onDanger: '#FFFFFF',
