@@ -12,6 +12,7 @@ import {
   LoadingState,
   Screen,
 } from '@/components';
+import { useApplicationForJob } from '@/hooks/useApplications';
 import { useJob } from '@/hooks/useJobs';
 import { useNavigateOnce } from '@/hooks/useNavigateOnce';
 import { useSavedJobs, useToggleSavedJob } from '@/hooks/useSavedJobs';
@@ -66,6 +67,7 @@ function JobDetail({ job }: { job: Job }) {
   const toggleSaved = useToggleSavedJob();
   const isSaved = savedJobs.data?.some((saved) => saved.id === job.id) ?? false;
   const isClosed = isJobClosed(job);
+  const { data: myApplication } = useApplicationForJob(job.id);
 
   return (
     <Screen scroll>
@@ -93,16 +95,31 @@ function JobDetail({ job }: { job: Job }) {
         <Section title="About the job" body={job.description} />
         <Section title="Requirements" body={job.requirements} />
 
-        <Button
-          title={isClosed ? 'Applications closed' : 'Apply for this job'}
-          icon="send-outline"
-          disabled={isClosed}
-          onPress={() =>
-            navigateOnce(() =>
-              router.push({ pathname: '/apply/[jobId]', params: { jobId: job.id } }),
-            )
-          }
-        />
+        {myApplication ? (
+          <Button
+            title="Already applied – view application"
+            icon="checkmark-done-outline"
+            onPress={() =>
+              navigateOnce(() =>
+                router.push({
+                  pathname: '/applications/[id]',
+                  params: { id: myApplication.id },
+                }),
+              )
+            }
+          />
+        ) : (
+          <Button
+            title={isClosed ? 'Applications closed' : 'Apply for this job'}
+            icon="send-outline"
+            disabled={isClosed}
+            onPress={() =>
+              navigateOnce(() =>
+                router.push({ pathname: '/apply/[jobId]', params: { jobId: job.id } }),
+              )
+            }
+          />
+        )}
         <Button
           title={isSaved ? 'Saved' : 'Save job'}
           icon={isSaved ? 'bookmark' : 'bookmark-outline'}
