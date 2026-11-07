@@ -14,6 +14,7 @@ export {
   type PickerOption,
 } from './OptionPickerModal';
 export { Screen, type ScreenProps } from './Screen';
+export { SkillsInput, type SkillsInputProps } from './SkillsInput';
 export { StatusBadge } from './StatusBadge';
 export {
   EmptyState,
