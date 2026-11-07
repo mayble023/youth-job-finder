@@ -65,12 +65,13 @@ export function useJobs(filters: JobFilters, options: { enabled?: boolean } = {}
 export type JobListStatus = 'loading' | 'success' | 'offline' | 'offlineNoCache' | 'error';
 
 /** One job. Shows the copy from any loaded list straight away while the full row loads. */
-export function useJob(id: string) {
+export function useJob(id: string | undefined) {
   const queryClient = useQueryClient();
 
   return useQuery<Job>({
-    queryKey: queryKeys.job(id),
-    queryFn: ({ signal }) => getJob(id, signal),
+    queryKey: queryKeys.job(id ?? ''),
+    queryFn: ({ signal }) => getJob(id ?? '', signal),
+    enabled: Boolean(id),
     placeholderData: () => {
       for (const [, jobs] of queryClient.getQueriesData<Job[]>({
         queryKey: queryKeys.jobLists(),
