@@ -8,4 +8,8 @@ export const queryKeys = {
   job: (id: string) => [...queryKeys.jobs, 'detail', id] as const,
   offlineJobList: ['offlineJobList'] as const,
   savedJobs: ['savedJobs'] as const,
+  applications: ['applications'] as const,
+  applicationList: () => [...queryKeys.applications, 'list'] as const,
+  application: (id: string) => [...queryKeys.applications, 'detail', id] as const,
+  applicationForJob: (jobId: string) => [...queryKeys.applications, 'forJob', jobId] as const,
 };

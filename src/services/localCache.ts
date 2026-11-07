@@ -71,3 +71,33 @@ export async function loadJobFilters(): Promise<JobFilters> {
     town: typeof town === 'string' ? town : null,
   };
 }
+
+/** Drafts are keyed by user too, so someone else logging in on the phone never sees them. */
+function applicationDraftKey(userId: string, jobId: string): string {
+  return `yjf:v1:applicationDraft:${userId}:${jobId}`;
+}
+
+export async function loadApplicationDraft(userId: string, jobId: string): Promise<string> {
+  const stored = await readJson(applicationDraftKey(userId, jobId));
+  return typeof stored === 'string' ? stored : '';
+}
+
+export async function saveApplicationDraft(
+  userId: string,
+  jobId: string,
+  coverNote: string,
+): Promise<void> {
+  if (coverNote.trim() === '') {
+    await clearApplicationDraft(userId, jobId);
+    return;
+  }
+  await writeJson(applicationDraftKey(userId, jobId), coverNote);
+}
+
+export async function clearApplicationDraft(userId: string, jobId: string): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(applicationDraftKey(userId, jobId));
+  } catch {
+    // Leaving a stale draft behind is harmless; it is overwritten on the next save.
+  }
+}
