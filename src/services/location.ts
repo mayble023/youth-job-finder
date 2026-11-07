@@ -91,3 +91,19 @@ export async function getPlaceName(coordinates: Coordinates): Promise<string | n
 export async function openAppSettings(): Promise<void> {
   await Linking.openSettings();
 }
+
+/**
+ * The phone's last known position, only if location is already allowed. Never shows a
+ * permission prompt, so screens that merely benefit from location (recommendations) can
+ * use it without interrupting the user.
+ */
+export async function getKnownCoordinatesWithoutPrompt(): Promise<Coordinates | null> {
+  try {
+    const permission = await Location.getForegroundPermissionsAsync();
+    if (!permission.granted) return null;
+    const lastKnown = await Location.getLastKnownPositionAsync({ maxAge: LAST_KNOWN_MAX_AGE_MS });
+    return lastKnown?.coords ?? null;
+  } catch {
+    return null;
+  }
+}

@@ -17,4 +17,5 @@ export const queryKeys = {
   profile: ['me', 'profile'] as const,
   cvInfo: (cvPath: string) => ['me', 'cv', cvPath] as const,
   reminderSettings: ['reminderSettings'] as const,
+  knownLocation: ['knownLocation'] as const,
 };
