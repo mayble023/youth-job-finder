@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, Switch, View } from 'react-native';
 
 import {
   AppText,
@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigateOnce } from '@/hooks/useNavigateOnce';
 import { useCvInfo, useDeleteCv, useProfile, useUploadCv, useViewCv } from '@/hooks/useProfile';
+import { useReminderSettings } from '@/hooks/useReminders';
 import { colors, iconSizes, spacing } from '@/theme';
 import type { Profile } from '@/types/database';
 import { getErrorKind, getErrorMessage } from '@/utils/errors';
@@ -110,6 +111,7 @@ function ProfileDetails({ profile }: { profile: Profile }) {
       </Card>
 
       <CvCard cvPath={profile.cv_path} />
+      <RemindersCard />
     </>
   );
 }
@@ -221,6 +223,46 @@ function CvCard({ cvPath }: { cvPath: string | null }) {
   );
 }
 
+function RemindersCard() {
+  const { settings, setEnabled, openSettings } = useReminderSettings();
+  const enabled = settings.data?.enabled ?? false;
+  const permission = settings.data?.permission;
+  const isBlocked = enabled && permission !== undefined && !permission.granted;
+
+  return (
+    <Card>
+      <View style={styles.switchRow}>
+        <View style={styles.switchText}>
+          <AppText variant="subheading">Interview reminders</AppText>
+          <AppText variant="caption">
+            We remind you 24 hours and 2 hours before each interview.
+          </AppText>
+        </View>
+        <Switch
+          value={enabled}
+          onValueChange={(value) => setEnabled.mutate(value)}
+          disabled={settings.isPending || setEnabled.isPending}
+          trackColor={{ false: colors.border, true: colors.primaryLight }}
+          thumbColor={enabled ? colors.primary : colors.surface}
+          accessibilityLabel="Interview reminders"
+        />
+      </View>
+      {isBlocked ? (
+        <>
+          <AppText variant="caption" color="warning">
+            Notifications are turned off for this app, so reminders cannot appear.
+          </AppText>
+          <Button
+            title={permission.canAskAgain ? 'Allow notifications' : 'Open settings'}
+            variant="ghost"
+            onPress={() => (permission.canAskAgain ? setEnabled.mutate(true) : void openSettings())}
+          />
+        </>
+      ) : null}
+    </Card>
+  );
+}
+
 function Detail({ icon, text }: { icon: 'location-outline' | 'school-outline'; text: string }) {
   return (
     <View style={styles.detail}>
@@ -298,6 +340,15 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   cvText: {
+    flex: 1,
+    gap: spacing.xs,
+  },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  switchText: {
     flex: 1,
     gap: spacing.xs,
   },
