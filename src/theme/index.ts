@@ -65,6 +65,8 @@ export const sizes = {
   chipHeight: 36,
   multilineInputMinHeight: 112,
   iconBadge: 72,
+  // Width of a card in a horizontal carousel, so the next card peeks in as a scroll hint.
+  carouselCard: 260,
 } as const;
 
 export const iconSizes = {

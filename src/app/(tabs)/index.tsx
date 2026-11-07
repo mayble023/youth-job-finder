@@ -1,15 +1,25 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { FlatList, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import {
   AppText,
+  Button,
+  Card,
   Chip,
   EmptyState,
   ErrorState,
   JobCard,
   LoadingState,
   OptionPickerModal,
+  RecommendationCard,
   Screen,
   TextField,
 } from '@/components';
@@ -17,6 +27,7 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useJobFilters } from '@/hooks/useJobFilters';
 import { useJobs } from '@/hooks/useJobs';
 import { useNavigateOnce } from '@/hooks/useNavigateOnce';
+import { useRecommendedJobs } from '@/hooks/useRecommendedJobs';
 import type { JobFilters } from '@/services/jobs';
 import { colors, spacing } from '@/theme';
 import { JOB_CATEGORIES, JOB_TYPES, type Job } from '@/types/database';
@@ -84,6 +95,8 @@ function JobList({ filters, updateFilters, clearFilters, hasActiveFilters }: Job
 
   const header = (
     <View style={styles.header}>
+      <RecommendedSection onOpenJob={openJob} />
+
       <TextField
         label="Search jobs"
         placeholder="Job title or company"
@@ -218,11 +231,89 @@ function JobList({ filters, updateFilters, clearFilters, hasActiveFilters }: Job
   );
 }
 
+function RecommendedSection({ onOpenJob }: { onOpenJob: (job: Job) => void }) {
+  const { status, recommendations, retry } = useRecommendedJobs();
+  const navigateOnce = useNavigateOnce();
+
+  let content: ReactNode;
+  if (status === 'loading') {
+    content = (
+      <View style={styles.recommendationMessage}>
+        <ActivityIndicator color={colors.primary} />
+        <AppText variant="caption">Finding jobs that suit you…</AppText>
+      </View>
+    );
+  } else if (status === 'noSkills') {
+    content = (
+      <Card>
+        <AppText>Add your skills to see jobs picked for you.</AppText>
+        <Button
+          title="Add skills in Edit profile"
+          icon="create-outline"
+          variant="ghost"
+          onPress={() => navigateOnce(() => router.push('/profile/edit'))}
+        />
+      </Card>
+    );
+  } else if (status === 'error') {
+    content = (
+      <View style={styles.recommendationMessage}>
+        <AppText variant="caption" style={styles.recommendationText}>
+          Could not load recommendations.
+        </AppText>
+        <Button title="Retry" variant="ghost" fullWidth={false} onPress={retry} />
+      </View>
+    );
+  } else if (status === 'empty') {
+    content = (
+      <AppText variant="caption">
+        No open jobs match your skills yet. Try adding more skills in your profile.
+      </AppText>
+    );
+  } else {
+    content = (
+      <FlatList
+        horizontal
+        data={recommendations}
+        keyExtractor={(recommended) => recommended.job.id}
+        renderItem={({ item }) => (
+          <RecommendationCard
+            job={item.job}
+            score={item.score}
+            reasons={item.reasons}
+            onPress={() => onOpenJob(item.job)}
+          />
+        )}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.chipRow}
+      />
+    );
+  }
+
+  return (
+    <View style={styles.recommendations}>
+      <AppText variant="subheading">Recommended for you</AppText>
+      {content}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   listContent: {
     flexGrow: 1,
     padding: spacing.lg,
     gap: spacing.md,
+  },
+  recommendations: {
+    gap: spacing.sm,
+  },
+  recommendationMessage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  recommendationText: {
+    flex: 1,
   },
   header: {
     gap: spacing.md,
