@@ -146,3 +146,15 @@ export async function resetPasswordWithCode(params: {
     throw error;
   }
 }
+
+/**
+ * The signed-in user's id, read from the stored session (no network call). Used to build
+ * paths such as `<userId>/cv.pdf`; RLS on the server still decides what the user may touch.
+ */
+export async function getCurrentUserId(): Promise<string> {
+  const session = await getSession();
+  if (!session) {
+    throw new AppError<AuthErrorKind>('unknown', 'Please log in again to continue.');
+  }
+  return session.user.id;
+}
