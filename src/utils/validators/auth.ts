@@ -60,9 +60,3 @@ export const resetPasswordSchema = z
     confirmPassword,
   })
   .refine((values) => values.password === values.confirmPassword, passwordsMatch);
-
-export type LoginForm = z.input<typeof loginSchema>;
-export type RegisterForm = z.input<typeof registerSchema>;
-export type VerifyCodeForm = z.input<typeof verifyCodeSchema>;
-export type ForgotPasswordEmailForm = z.input<typeof forgotPasswordEmailSchema>;
-export type ResetPasswordForm = z.input<typeof resetPasswordSchema>;
