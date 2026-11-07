@@ -12,4 +12,8 @@ export const queryKeys = {
   applicationList: () => [...queryKeys.applications, 'list'] as const,
   application: (id: string) => [...queryKeys.applications, 'detail', id] as const,
   applicationForJob: (jobId: string) => [...queryKeys.applications, 'forJob', jobId] as const,
+  // Profile and CV share a prefix so one invalidation refreshes both after an upload.
+  profileAndCv: ['me'] as const,
+  profile: ['me', 'profile'] as const,
+  cvInfo: (cvPath: string) => ['me', 'cv', cvPath] as const,
 };
